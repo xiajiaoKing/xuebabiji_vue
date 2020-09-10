@@ -1,0 +1,30 @@
+{
+  "id": "1747126",
+  "name": "项目管理web",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "812805",
+      "name": "锁",
+      "font_class": "suo",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "6235883",
+      "name": "头像",
+      "font_class": "touxiang",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "8657247",
+      "name": "安全",
+      "font_class": "anquan",
+      "unicode": "e712",
+      "unicode_decimal": 59154
+    }
+  ]
+}

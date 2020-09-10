@@ -1,0 +1,14 @@
+/* 天蓝色导出按钮 */
+.el-button--export {
+  background-color: #32C5E9;
+  color: white;
+  border-bottom-color: #32C5E9;
+}
+
+.el-button--export:hover {
+  background-color: #46cfe9;
+  color: white;
+  border-bottom-color: #46cfe9;
+}
+
+
