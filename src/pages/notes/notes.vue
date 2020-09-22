@@ -136,7 +136,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="录取图片1"  label-width="150px">
+        <el-form-item label="录取图片"  label-width="150px">
           <el-upload
             action="http://localhost:9999/api/file/upload"
             list-type="picture-card"
@@ -151,6 +151,14 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
+
+
+        <el-form-item v-if="subjectSelectShow" label="科目类型"   label-width="150px">
+          <el-select v-model="form.subjectId" filterable clearable placeholder="请选择">
+            <el-option v-for="item in subjectList" :label="item.dictName" :value="item.id" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
 
         <el-form-item label="上传笔记Zip"  label-width="150px">
           <el-upload
@@ -205,7 +213,8 @@ const ROLE_MODEL = {
   enrollmentPic:'',
   enrollmentId:[],
   bookUrl:'',
-  dataZipUrl:''
+  dataZipUrl:'',
+  subjectId: '',
   }
 
 function treeToPath (tree) {
@@ -239,6 +248,8 @@ export default {
       idx: -1,
       menus: [],
       menuVisible: false,
+      subjectSelectShow: false,
+      subjectList: [],
       rules: {
         roleCode: [
           { required: true, message: '请输入角色编码', trigger: 'blur' }
@@ -275,10 +286,23 @@ export default {
       dataZipList:[] //数据包
     }
   },
+
+  watch: {
+    'form.type'(val){
+      if(val === 1){
+        this.subjectSelectShow = true
+        return;
+      }
+      this.form.subjectId = ''
+      this.subjectSelectShow = false
+    }
+  },
+
   created () {
     this.getData()
     this.findStudentList()
     this.findLevelList()
+    this.findSubjectList();
   },
   methods: {
     handleClose (done) {
@@ -328,20 +352,26 @@ export default {
           this.form.dataZipUrl = ''
 
           //图片
-          for(var i=0;i<bean.enrollmentPicArg.length;i++){
-            this.enPicList.push({
-              'name': bean.enrollmentPicArg[i].fileName,
-              'uid': bean.enrollmentPicArg[i].id,
-              'url': bean.enrollmentPicArg[i].fileUrl
+          if(bean.enrollmentPicArg != null){
+            for(var i=0;i<bean.enrollmentPicArg.length;i++){
+              this.enPicList.push({
+                'name': bean.enrollmentPicArg[i].fileName,
+                'uid': bean.enrollmentPicArg[i].id,
+                'url': bean.enrollmentPicArg[i].fileUrl
+              })
+            }
+          }
+
+
+          //要所报
+          if(bean.dataZipFile != null){
+            this.dataZipList.push({
+              'name': bean.dataZipFile.fileName,
+              'url': bean.dataZipFile.fileUrl,
+              'uid': bean.dataZipFile.id
             })
           }
 
-          //要所报
-          this.dataZipList.push({
-            'name': bean.dataZipFile.fileName,
-            'url': bean.dataZipFile.fileUrl,
-            'uid': bean.dataZipFile.id
-          })
 
           this.getData()
         })
@@ -354,6 +384,7 @@ export default {
         this.enPicList = []
         this.dataZipList=[]
         this.form.dataZipUrl = ''
+        this.form.subjectId = ''
 
         this.form = JSON.parse(JSON.stringify(ROLE_MODEL))
         this.title = '新增笔记信息'
@@ -385,8 +416,10 @@ export default {
 
       var that = this;
       this.$refs['ruleForm'].validate(valid => {
+        if(that.form.enrollmentId != null){
+          that.form.bookUrl = that.form.enrollmentId.join()
+        }
 
-        that.form.bookUrl = that.form.enrollmentId.join()
         that.form.enrollmentPicArg = []
 
         if (valid) {
@@ -530,6 +563,18 @@ export default {
         }
       })
     },
+
+    //查找科目list
+    findSubjectList(){
+      notesJs.findSubjectList().then(resp => {
+        if (resp.data.status) {
+          this.subjectList = resp.data.data
+        } else {
+          this.$message.error(resp.data.msg)
+        }
+      })
+    },
+
 
     dataZipRemove(){
       console.log("dataZipList========",this.dataZipList)

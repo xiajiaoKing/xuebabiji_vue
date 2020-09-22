@@ -87,6 +87,11 @@ function getNoteBookMsg(id) {
   return server.axios.post('/book/getNoteBookMsg', qs.stringify({id: id}))
 }
 
+//查找科目list
+function findSubjectList(id) {
+  return server.axios.post('/sys/dictionary/findDictByParentCode', qs.stringify({dictCode: 'KMMC'}))
+}
+
 
 export default {
   getNoteBookMsg,
@@ -103,6 +108,7 @@ export default {
   getNotesLevel,
   findStudentList,
   createOrEditForStudentMsg,
+  findSubjectList,
 
 
 }
